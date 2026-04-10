@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestionnaire qualité d'air — Guillaume</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #ffffff;
+      --bg2: #f7f7f5;
+      --bg3: #f0f0ee;
+      --text: #1a1a1a;
+      --text2: #6b6b6b;
+      --text3: #a0a0a0;
+      --border: rgba(0,0,0,0.09);
+      --border2: rgba(0,0,0,0.16);
+      --accent: #1D9E75;
+      --accent-d: #0F6E56;
+      --accent-l: #E1F5EE;
+      --accent-t: #0F6E56;
+      --r-md: 8px;
+      --r-lg: 12px;
+      --r-xl: 16px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #161616;
+        --bg2: #1f1f1f;
+        --bg3: #282828;
+        --text: #f0f0f0;
+        --text2: #999;
+        --text3: #555;
+        --border: rgba(255,255,255,0.08);
+        --border2: rgba(255,255,255,0.15);
+        --accent-l: #0a3d2e;
+        --accent-t: #5DCAA5;
+      }
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .container { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem 6rem; }
+
+    /* BACK */
+    .back {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      color: var(--text2);
+      text-decoration: none;
+      padding: 7px 14px;
+      border: 0.5px solid var(--border2);
+      border-radius: var(--r-md);
+      margin-bottom: 2.5rem;
+      transition: background 0.15s, color 0.15s;
+    }
+    .back:hover { background: var(--bg2); color: var(--text); }
+    .back svg { transition: transform 0.15s; }
+    .back:hover svg { transform: translateX(-2px); }
+
+    /* HERO */
+    .hero {
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+      padding-bottom: 2rem;
+      border-bottom: 0.5px solid var(--border);
+      margin-bottom: 2.5rem;
+      flex-wrap: wrap;
+    }
+
+    .proj-logo {
+      width: 68px;
+      height: 68px;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 0.5px solid var(--border2);
+      flex-shrink: 0;
+    }
+    .proj-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+    .hero-text h1 {
+      font-size: clamp(22px, 4vw, 30px);
+      font-weight: 600;
+      letter-spacing: -0.4px;
+      line-height: 1.2;
+    }
+
+    .hero-text p {
+      font-size: 14px;
+      color: var(--text2);
+      margin-top: 8px;
+      line-height: 1.65;
+      max-width: 520px;
+    }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+    .chip {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      border: 0.5px solid var(--border2);
+      color: var(--text2);
+      background: var(--bg2);
+    }
+    .chip.g { border-color: var(--accent); color: var(--accent-t); background: var(--accent-l); }
+
+    /* STATS */
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      margin-bottom: 2.5rem;
+    }
+    @media(max-width: 500px) { .stats { grid-template-columns: repeat(2,1fr); } }
+    .stat {
+      background: var(--bg2);
+      border-radius: var(--r-md);
+      padding: 1rem;
+      text-align: center;
+    }
+    .stat .v { font-size: 22px; font-weight: 600; color: var(--accent); line-height: 1; }
+    .stat .l { font-size: 11px; color: var(--text3); margin-top: 5px; }
+
+    /* SECTION */
+    .section { margin-bottom: 3rem; }
+    .sec-label {
+      font-size: 11px;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text3);
+      margin-bottom: 1.25rem;
+    }
+
+    /* SCREENSHOT CARDS */
+    .screen-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1rem;
+    }
+    .screen-card {
+      border: 0.5px solid var(--border);
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      background: var(--bg);
+      transition: border-color 0.15s;
+    }
+    .screen-card:hover { border-color: var(--border2); }
+    .screen-card.full { grid-column: 1 / -1; }
+
+    .screen-img {
+      width: 100%;
+      aspect-ratio: 16/9;
+      overflow: hidden;
+      background: var(--bg2);
+    }
+    .screen-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: top;
+      transition: transform 0.3s ease;
+    }
+    .screen-card:hover .screen-img img { transform: scale(1.02); }
+
+    .screen-caption {
+      padding: 12px 16px;
+      border-top: 0.5px solid var(--border);
+    }
+    .screen-caption strong { font-size: 13px; font-weight: 500; display: block; }
+    .screen-caption span { font-size: 12px; color: var(--text2); margin-top: 2px; display: block; }
+
+    /* ARCHITECTURE */
+    .arch-flow {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 1.25rem 1.5rem;
+      background: var(--bg2);
+      border-radius: var(--r-lg);
+      margin-bottom: 1rem;
+    }
+    .arch-node {
+      background: var(--bg);
+      border: 0.5px solid var(--border2);
+      border-radius: var(--r-md);
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .arch-node.accent { background: var(--accent-l); border-color: var(--accent); color: var(--accent-t); }
+    .arch-arrow { color: var(--text3); font-size: 18px; }
+
+    .arch-desc {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.7;
+      padding: 1rem 1.25rem;
+      background: var(--bg2);
+      border-radius: var(--r-lg);
+      border-left: 3px solid var(--accent);
+      border-radius: 0;
+    }
+
+    /* FEATURES */
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 10px;
+    }
+    .feat {
+      background: var(--bg2);
+      border-radius: var(--r-md);
+      padding: 1rem 1.1rem;
+    }
+    .feat-icon {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+    .feat h4 { font-size: 13px; font-weight: 500; margin-bottom: 5px; }
+    .feat p { font-size: 12px; color: var(--text2); line-height: 1.55; }
+
+    /* CODE */
+    .code-wrap {
+      background: #0d1117;
+      border-radius: var(--r-lg);
+      overflow: hidden;
+      border: 0.5px solid var(--border2);
+      margin-bottom: 1rem;
+    }
+    .code-bar {
+      background: #161b22;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 0.5px solid rgba(255,255,255,0.06);
+    }
+    .code-bar span { font-family: 'DM Mono', monospace; font-size: 12px; color: #8b949e; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; }
+    .dot-y { background: #febc2e; }
+    .dot-g { background: #28c840; }
+    pre {
+      padding: 1.25rem 1.5rem;
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      color: #c9d1d9;
+      overflow-x: auto;
+      line-height: 1.7;
+    }
+    .kw { color: #ff7b72; }
+    .fn { color: #79c0ff; }
+    .str { color: #a5d6ff; }
+    .cm { color: #8b949e; font-style: italic; }
+    .num { color: #f2cc60; }
+    .type { color: #ffa657; }
+
+    /* ISSUES */
+    .issues { display: flex; flex-direction: column; gap: 8px; }
+    .issue {
+      padding: 12px 16px;
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.6;
+      background: var(--bg2);
+    }
+    .issue.red { border-left: 3px solid #E24B4A; }
+    .issue.yellow { border-left: 3px solid #EF9F27; }
+    .issue.green { border-left: 3px solid #1D9E75; }
+
+    /* DIVIDER */
+    hr { border: none; border-top: 0.5px solid var(--border); margin: 2.5rem 0; }
+
+    /* FOOTER NAV */
+    .footer-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 2rem;
+      border-top: 0.5px solid var(--border);
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .footer-nav a {
+      font-size: 13px;
+      color: var(--text2);
+      text-decoration: none;
+      padding: 8px 16px;
+      border: 0.5px solid var(--border2);
+      border-radius: var(--r-md);
+      transition: background 0.15s;
+    }
+    .footer-nav a:hover { background: var(--bg2); color: var(--text); }
+    .footer-nav a.cta { background: var(--accent); color: white; border-color: var(--accent); font-weight: 500; }
+    .footer-nav a.cta:hover { background: var(--accent-d); }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <!-- BACK -->
+  <a href="index.html" class="back">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3L5 8l5 5"/></svg>
+    Retour au portfolio
+  </a>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="proj-logo">
+      <img src="logo.png" alt="Logo projet qualité d'air" />
+    </div>
+    <div class="hero-text">
+      <h1>Gestionnaire de qualité d'air</h1>
+      <p>Application IHM de supervision en temps réel de la qualité de l'air intérieur — mesure, stockage, visualisation et gestion des alarmes sur plusieurs salles. Projet de BTS CIEL, réalisé en équipe de 3.</p>
+      <div class="chips">
+        <span class="chip g">C++</span>
+        <span class="chip g">QML / Qt 6</span>
+        <span class="chip g">ESP32</span>
+        <span class="chip g">WebSocket</span>
+        <span class="chip g">Raspberry Pi 4</span>
+        <span class="chip">MySQL</span>
+        <span class="chip">GPIOD</span>
+        <span class="chip">BTS CIEL · 2025</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><div class="v">4</div><div class="l">Capteurs</div></div>
+    <div class="stat"><div class="v">N</div><div class="l">Salles</div></div>
+    <div class="stat"><div class="v">3</div><div class="l">Étudiants</div></div>
+    <div class="stat"><div class="v">Qt 6</div><div class="l">Framework</div></div>
+  </div>
+
+  <!-- SECTION 1 — SÉLECTION DE SALLE -->
+  <div class="section">
+    <p class="sec-label">1 · Sélection de salle</p>
+    <div class="screen-grid">
+      <div class="screen-card full">
+        <div class="screen-img">
+          <img src="selection_salle.png" alt="Vue sélection de salle et code" />
+        </div>
+        <div class="screen-caption">
+          <strong>Vue sélection de salle</strong>
+          <span>La liste des salles est chargée dynamiquement depuis la base MySQL via un timer Qt. Un clic sur une salle envoie l'ID à QML et navigue vers la vue de mesures.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 2 — VUE DONNÉES -->
+  <div class="section">
+    <p class="sec-label">2 · Interface de mesures et historique</p>
+    <div class="screen-grid">
+      <div class="screen-card full">
+        <div class="screen-img">
+          <img src="ihm_vues.png" alt="Les 4 vues de l'IHM" />
+        </div>
+        <div class="screen-caption">
+          <strong>Les 4 vues principales de l'IHM</strong>
+          <span>Sélection de salle → Données temps réel avec historique graphique → Gestion alarmes (OFF) → Alarmes activées (ON). Navigation fluide entre les vues via StackLayout QML.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 3 — ALARMES -->
+  <div class="section">
+    <p class="sec-label">3 · Gestion des alarmes et ventilateurs</p>
+    <div class="screen-grid">
+      <div class="screen-card full">
+        <div class="screen-img">
+          <img src="alarmes.png" alt="Gestion des alarmes" />
+        </div>
+        <div class="screen-caption">
+          <strong>Activation automatique des alarmes</strong>
+          <span>Quand une mesure dépasse le seuil configuré, le serveur WebSocket émet ARLV=1 (alarme visuelle) ou ARLS=1 (alarme sonore). L'IHM QML met à jour les toggles en temps réel.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 4 — ARCHITECTURE -->
+  <div class="section">
+    <p class="sec-label">4 · Architecture du système</p>
+
+    <div class="arch-flow">
+      <div class="arch-node">ESP32</div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node accent">WebSocket<br><small style="font-size:10px;font-weight:400">Raspberry Pi 4</small></div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">MySQL</div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">IHM Qt/QML</div>
+      <span class="arch-arrow" style="margin-left:auto">↕</span>
+      <div class="arch-node">GPIO</div>
+    </div>
+
+    <div class="screen-grid" style="margin-top:1rem">
+      <div class="screen-card full">
+        <div class="screen-img">
+          <img src="echanges.png" alt="Diagramme des échanges" />
+        </div>
+        <div class="screen-caption">
+          <strong>Diagramme de séquence des échanges</strong>
+          <span>L'ESP32 envoie les mesures (CO₂, TVOC, Température, Humidité) au format <code style="font-family:DM Mono,monospace;font-size:11px">CO2_001=0414,0;TVOC001=0018,0;...</code> via WebSocket. Le serveur stocke en BDD et redistribue à l'IHM.</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="arch-desc" style="margin-top:1rem">
+      Ma partie personnelle couvrait l'intégralité de l'IHM Qt/QML : connexion WebSocket côté client, parsing des trames, affichage temps réel, graphiques historiques, gestion des alarmes et commande des ventilateurs via GPIO de la Raspberry Pi.
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 5 — FONCTIONNALITÉS -->
+  <div class="section">
+    <p class="sec-label">5 · Fonctionnalités clés</p>
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="feat-icon" style="background:#E1F5EE">📡</div>
+        <h4>Mesures temps réel</h4>
+        <p>CO₂, TVOC, température, humidité mis à jour en continu via WebSocket</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#E6F1FB">📊</div>
+        <h4>Historique graphique</h4>
+        <p>Visualisation par capteur avec sélecteur déroulant, axes dynamiques Qt Charts</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#FAEEDA">🔔</div>
+        <h4>Alarmes intelligentes</h4>
+        <p>Déclenchement auto selon seuils configurés — visuelles et sonores</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#FAECE7">💨</div>
+        <h4>Contrôle ventilation</h4>
+        <p>Activation/désactivation des ventilateurs via GPIO avec librairie GPIOD</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#EEEDFE">🗄️</div>
+        <h4>BDD dynamique</h4>
+        <p>Tables créées automatiquement par mois/année — gestion des requêtes SQL via Qt</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#EAF3DE">🔌</div>
+        <h4>Multi-salles</h4>
+        <p>Supervision simultanée de N salles avec navigation fluide entre les vues</p>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 6 — EXTRAIT CODE -->
+  <div class="section">
+    <p class="sec-label">6 · Extrait de code — réception WebSocket</p>
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <span>WebSocket.cpp</span>
+      </div>
+      <pre><span class="cm">// Format reçu : CO2_001=0414,0;TVOC001=0018,0;TEMP001=0026,5;HUM001=0033,7</span>
+<span class="kw">void</span> <span class="fn">WebSocket</span>::<span class="fn">processTextMessage</span>(<span class="type">QString</span> message) {
+    <span class="type">QWebSocket</span> *senderSocket = <span class="fn">qobject_cast</span>&lt;<span class="type">QWebSocket</span>*&gt;(<span class="fn">sender</span>());
+
+    <span class="type">QString</span> CO2    = message.<span class="fn">mid</span>(<span class="num">0</span>,  <span class="num">4</span>);
+    <span class="type">QString</span> num    = message.<span class="fn">mid</span>(<span class="num">4</span>,  <span class="num">3</span>);
+    <span class="type">QString</span> valeur = message.<span class="fn">mid</span>(<span class="num">8</span>,  <span class="num">6</span>);
+    valeur = valeur.<span class="fn">replace</span>(<span class="str">','</span>, <span class="str">'.'</span>);
+
+    <span class="type">QString</span> currentTime = <span class="type">QDateTime</span>::<span class="fn">currentDateTime</span>()
+        .<span class="fn">toString</span>(<span class="str">"yyyy-MM-dd HH:mm:ss"</span>);
+
+    <span class="cm">// Stockage en BDD + émission signal vers QML</span>
+    <span class="fn">emit</span> <span class="fn">nouvellesMesures</span>(id, valeur3, valeur4, valeur2, valeur);
+}</pre>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="dot dot-r"></div>
+        <div class="dot dot-y"></div>
+        <div class="dot dot-g"></div>
+        <span>Salle.cpp — gestion ventilateur via GPIO</span>
+      </div>
+      <pre><span class="kw">void</span> <span class="fn">Salle</span>::<span class="fn">gestVentilateur</span>(<span class="kw">int</span> idSalle, <span class="kw">bool</span> actif) {
+    <span class="kw">int</span> value = actif ? <span class="num">1</span> : <span class="num">0</span>;
+
+    <span class="kw">if</span> (idSalle == <span class="num">1</span>) {
+        <span class="fn">gpiod_line_set_value</span>(line1, value);
+        <span class="fn">qDebug</span>() &lt;&lt; <span class="str">"Ventilateur salle 1"</span> &lt;&lt; (actif ? <span class="str">"ON"</span> : <span class="str">"OFF"</span>);
+    } <span class="kw">else if</span> (idSalle == <span class="num">2</span>) {
+        <span class="fn">gpiod_line_set_value</span>(line2, value);
+        <span class="fn">qDebug</span>() &lt;&lt; <span class="str">"Ventilateur salle 2"</span> &lt;&lt; (actif ? <span class="str">"ON"</span> : <span class="str">"OFF"</span>);
+    }
+}</pre>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 7 — DIFFICULTÉS -->
+  <div class="section">
+    <p class="sec-label">7 · Difficultés rencontrées</p>
+    <div class="issues">
+      <div class="issue red">Carte SD cassée en cours de projet → réinstallation complète de la Raspberry Pi 4 et recompilation de Qt 6 pour ARM64 depuis zéro.</div>
+      <div class="issue yellow">Compilation de Qt 6 sur ARM64 complexe — installation de Ninja et CMake nécessaire, durée de compilation très longue sur Raspberry Pi.</div>
+      <div class="issue green">Amélioration possible : remplacer MySQL par une connexion WSS sécurisée pour la communication ESP32 → serveur WebSocket.</div>
+    </div>
+  </div>
+
+  <!-- FOOTER NAV -->
+  <div class="footer-nav">
+    <a href="index.html">← Retour au portfolio</a>
+    <a href="https://github.com/TON-PSEUDO/air-quality" target="_blank" class="cta">Voir le code sur GitHub</a>
+  </div>
+
+</div>
+</body>
+</html>
