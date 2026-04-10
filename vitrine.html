@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Site Vitrine Photo — Guillaume</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #ffffff;
+      --bg2: #f7f7f5;
+      --bg3: #f0f0ee;
+      --text: #1a1a1a;
+      --text2: #6b6b6b;
+      --text3: #a0a0a0;
+      --border: rgba(0,0,0,0.09);
+      --border2: rgba(0,0,0,0.16);
+      --accent: #1D9E75;
+      --accent-d: #0F6E56;
+      --accent-l: #E1F5EE;
+      --accent-t: #0F6E56;
+      --r-md: 8px;
+      --r-lg: 12px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #161616; --bg2: #1f1f1f; --bg3: #282828;
+        --text: #f0f0f0; --text2: #999; --text3: #555;
+        --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.15);
+        --accent-l: #0a3d2e; --accent-t: #5DCAA5;
+      }
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    .container { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem 6rem; }
+
+    .back {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 13px; color: var(--text2); text-decoration: none;
+      padding: 7px 14px; border: 0.5px solid var(--border2);
+      border-radius: var(--r-md); margin-bottom: 2.5rem;
+      transition: background 0.15s, color 0.15s;
+    }
+    .back:hover { background: var(--bg2); color: var(--text); }
+    .back:hover svg { transform: translateX(-2px); }
+    .back svg { transition: transform 0.15s; }
+
+    .hero { display: flex; gap: 1.5rem; align-items: flex-start; padding-bottom: 2rem; border-bottom: 0.5px solid var(--border); margin-bottom: 2.5rem; flex-wrap: wrap; }
+
+    .proj-logo { width: 68px; height: 68px; border-radius: 14px; overflow: hidden; border: 0.5px solid var(--border2); flex-shrink: 0; background: var(--bg2); display: flex; align-items: center; justify-content: center; }
+    .proj-logo img { width: 100%; height: 100%; object-fit: contain; padding: 6px; }
+
+    .hero-text h1 { font-size: clamp(22px, 4vw, 30px); font-weight: 600; letter-spacing: -0.4px; line-height: 1.2; }
+    .hero-text p { font-size: 14px; color: var(--text2); margin-top: 8px; line-height: 1.65; max-width: 520px; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+    .chip { font-family: 'DM Mono', monospace; font-size: 11px; padding: 3px 10px; border-radius: 20px; border: 0.5px solid var(--border2); color: var(--text2); background: var(--bg2); }
+    .chip.g { border-color: var(--accent); color: var(--accent-t); background: var(--accent-l); }
+
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 2.5rem; }
+    @media(max-width:500px){ .stats { grid-template-columns: repeat(2,1fr); } }
+    .stat { background: var(--bg2); border-radius: var(--r-md); padding: 1rem; text-align: center; }
+    .stat .v { font-size: 22px; font-weight: 600; color: var(--accent); line-height: 1; }
+    .stat .l { font-size: 11px; color: var(--text3); margin-top: 5px; }
+
+    .section { margin-bottom: 3rem; }
+    .sec-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); margin-bottom: 1.25rem; }
+
+    .screen-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1rem; }
+    .screen-card { border: 0.5px solid var(--border); border-radius: var(--r-lg); overflow: hidden; background: var(--bg); transition: border-color 0.15s; }
+    .screen-card:hover { border-color: var(--border2); }
+    .screen-card.full { grid-column: 1 / -1; }
+
+    .screen-img { width: 100%; aspect-ratio: 16/9; overflow: hidden; background: var(--bg2); }
+    .screen-img img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform 0.3s ease; }
+    .screen-card:hover .screen-img img { transform: scale(1.02); }
+
+    .screen-caption { padding: 12px 16px; border-top: 0.5px solid var(--border); }
+    .screen-caption strong { font-size: 13px; font-weight: 500; display: block; }
+    .screen-caption span { font-size: 12px; color: var(--text2); margin-top: 2px; display: block; }
+
+    .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+    .feat { background: var(--bg2); border-radius: var(--r-md); padding: 1rem 1.1rem; }
+    .feat-icon { width: 34px; height: 34px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .feat h4 { font-size: 13px; font-weight: 500; margin-bottom: 5px; }
+    .feat p { font-size: 12px; color: var(--text2); line-height: 1.55; }
+
+    .code-wrap { background: #0d1117; border-radius: var(--r-lg); overflow: hidden; border: 0.5px solid var(--border2); margin-bottom: 1rem; }
+    .code-bar { background: #161b22; padding: 8px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 0.5px solid rgba(255,255,255,0.06); }
+    .code-bar span { font-family: 'DM Mono', monospace; font-size: 12px; color: #8b949e; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; } .dot-y { background: #febc2e; } .dot-g { background: #28c840; }
+    pre { padding: 1.25rem 1.5rem; font-family: 'DM Mono', monospace; font-size: 12px; color: #c9d1d9; overflow-x: auto; line-height: 1.7; }
+    .kw { color: #ff7b72; } .fn { color: #79c0ff; } .str { color: #a5d6ff; } .cm { color: #8b949e; font-style: italic; } .ph { color: #ffa657; }
+
+    .tech-row { display: flex; flex-wrap: wrap; gap: 8px; padding: 1.25rem; background: var(--bg2); border-radius: var(--r-lg); margin-bottom: 1rem; }
+    .tech-badge { background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--r-md); padding: 6px 14px; font-size: 13px; font-weight: 500; }
+
+    .pages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+    .page-card { background: var(--bg2); border-radius: var(--r-md); padding: 1rem; }
+    .page-card .num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); font-weight: 500; margin-bottom: 6px; }
+    .page-card h4 { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+    .page-card p { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+    hr { border: none; border-top: 0.5px solid var(--border); margin: 2.5rem 0; }
+
+    .footer-nav { display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; border-top: 0.5px solid var(--border); flex-wrap: wrap; gap: 1rem; }
+    .footer-nav a { font-size: 13px; color: var(--text2); text-decoration: none; padding: 8px 16px; border: 0.5px solid var(--border2); border-radius: var(--r-md); transition: background 0.15s; }
+    .footer-nav a:hover { background: var(--bg2); color: var(--text); }
+    .footer-nav a.cta { background: var(--accent); color: white; border-color: var(--accent); font-weight: 500; }
+    .footer-nav a.cta:hover { background: var(--accent-d); }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <a href="index.html" class="back">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3L5 8l5 5"/></svg>
+    Retour au portfolio
+  </a>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="proj-logo">
+      <img src="logo3.png" alt="Logo Vitrine Photo" />
+    </div>
+    <div class="hero-text">
+      <h1>Site vitrine photographe</h1>
+      <p>Site web complet développé de A à Z pour un photographe basé à Monaco — galerie dynamique avec lightbox, gestion de contenu via BDD MySQL, pages biographie et services avec back-end PHP sécurisé.</p>
+      <div class="chips">
+        <span class="chip g">HTML</span>
+        <span class="chip g">CSS</span>
+        <span class="chip g">JavaScript</span>
+        <span class="chip g">PHP</span>
+        <span class="chip g">MySQL</span>
+        <span class="chip">PDO</span>
+        <span class="chip">Lightbox</span>
+        <span class="chip">Projet personnel · 2025</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><div class="v">4</div><div class="l">Pages</div></div>
+    <div class="stat"><div class="v">PHP</div><div class="l">Back-end</div></div>
+    <div class="stat"><div class="v">BDD</div><div class="l">MySQL</div></div>
+    <div class="stat"><div class="v">100%</div><div class="l">Fait maison</div></div>
+  </div>
+
+  <!-- SECTION 1 — ACCUEIL -->
+  <div class="section">
+    <p class="sec-label">1 · Page d'accueil</p>
+    <div class="screen-grid">
+      <div class="screen-card full">
+        <div class="screen-img">
+          <img src="vitrine_accueil.png" alt="Page d'accueil" />
+        </div>
+        <div class="screen-caption">
+          <strong>Page d'accueil — galerie des 8 dernières photos</strong>
+          <span>Le header affiche le logo, la localisation, les réseaux sociaux et la navigation. La galerie charge dynamiquement les 8 dernières photos depuis la base MySQL via PDO.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 2 — BIBLIOTHÈQUE -->
+  <div class="section">
+    <p class="sec-label">2 · Bibliothèque photo</p>
+    <div class="screen-grid">
+      <div class="screen-card full">
+        <div class="screen-img">
+          <img src="vitrine_bibliotheque.png" alt="Bibliothèque photo" />
+        </div>
+        <div class="screen-caption">
+          <strong>Bibliothèque — galerie complète synchronisée</strong>
+          <span>La bibliothèque synchronise automatiquement le dossier <code style="font-family:DM Mono,monospace;font-size:11px">/images</code> avec la base de données à chaque chargement — ajout et suppression automatiques des entrées.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 3 — LIGHTBOX -->
+  <div class="section">
+    <p class="sec-label">3 · Lightbox interactive</p>
+    <div class="screen-grid">
+      <div class="screen-card full">
+        <div class="screen-img">
+          <img src="vitrine_lightbox.png" alt="Lightbox" />
+        </div>
+        <div class="screen-caption">
+          <strong>Lightbox — image en grand format avec fiche descriptive</strong>
+          <span>Un clic sur une photo ouvre une lightbox avec animation. La fiche technique est chargée dynamiquement depuis un fichier <code style="font-family:DM Mono,monospace;font-size:11px">.txt</code> associé via <code style="font-family:DM Mono,monospace;font-size:11px">fetch()</code> — fermeture par clic extérieur ou touche Échap.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 4 — BIOGRAPHIE -->
+  <div class="section">
+    <p class="sec-label">4 · Page biographie</p>
+    <div class="screen-grid">
+      <div class="screen-card full">
+        <div class="screen-img">
+          <img src="vitrine_bio.png" alt="Page biographie" />
+        </div>
+        <div class="screen-caption">
+          <strong>Biographie — lecture sécurisée depuis un fichier texte</strong>
+          <span>Le contenu est lu depuis un fichier <code style="font-family:DM Mono,monospace;font-size:11px">.txt</code> via PHP avec chemin absolu, limite de 100 Ko et échappement HTML pour éviter les injections.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 5 — SERVICES -->
+  <div class="section">
+    <p class="sec-label">5 · Page services</p>
+    <div class="screen-grid">
+      <div class="screen-card full">
+        <div class="screen-img">
+          <img src="vitrine_services.png" alt="Page services" />
+        </div>
+        <div class="screen-caption">
+          <strong>Services — 4 prestations avec contact dynamique</strong>
+          <span>Les coordonnées (email, téléphone) sont récupérées depuis la BDD — les boutons "Demander une séance" génèrent des liens <code style="font-family:DM Mono,monospace;font-size:11px">mailto:</code> avec sujet et corps pré-remplis.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 6 — STRUCTURE -->
+  <div class="section">
+    <p class="sec-label">6 · Structure des pages</p>
+    <div class="pages-grid">
+      <div class="page-card">
+        <div class="num">index.php</div>
+        <h4>Accueil</h4>
+        <p>Galerie des 8 dernières photos, réseaux sociaux depuis BDD, lightbox simple</p>
+      </div>
+      <div class="page-card">
+        <div class="num">bibliotheque.php</div>
+        <h4>Bibliothèque</h4>
+        <p>Sync auto dossier/BDD, galerie complète, lightbox avec fiche technique</p>
+      </div>
+      <div class="page-card">
+        <div class="num">biographie.php</div>
+        <h4>Biographie</h4>
+        <p>Lecture sécurisée du fichier .txt, protection injection HTML</p>
+      </div>
+      <div class="page-card">
+        <div class="num">service.php</div>
+        <h4>Services</h4>
+        <p>4 cartes prestations, tarifs, contact email dynamique depuis BDD</p>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 7 — CODE -->
+  <div class="section">
+    <p class="sec-label">7 · Extraits de code</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        <span>bibliotheque.php — synchronisation dossier ↔ BDD</span>
+      </div>
+      <pre><span class="kw">function</span> <span class="fn">syncFolderWithDB</span>($dir, $type, $pdo) {
+    $files = <span class="fn">array_diff</span>(<span class="fn">scandir</span>($dir), [<span class="str">"."</span>, <span class="str">".."</span>]);
+
+    <span class="cm">// Ajout des fichiers manquants en BDD</span>
+    <span class="kw">foreach</span> ($files <span class="kw">as</span> $file) {
+        $check = $pdo-><span class="fn">prepare</span>(<span class="str">"SELECT id FROM bibliotheque WHERE photos = :file"</span>);
+        $check-><span class="fn">execute</span>([<span class="str">'file'</span> => $file]);
+        <span class="kw">if</span> (!$check-><span class="fn">fetch</span>()) {
+            $stmt = $pdo-><span class="fn">prepare</span>(<span class="str">"INSERT INTO bibliotheque (photos, fichier) VALUES (:file, :type)"</span>);
+            $stmt-><span class="fn">execute</span>([<span class="str">'file'</span> => $file, <span class="str">'type'</span> => $type]);
+        }
+    }
+    <span class="cm">// Suppression des fichiers qui n'existent plus</span>
+    <span class="cm">// ...</span>
+}</pre>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        <span>scriptouioui.js — chargement lightbox + fetch description</span>
+      </div>
+      <pre><span class="fn">images</span>.<span class="fn">forEach</span>(img => {
+    img.<span class="fn">addEventListener</span>(<span class="str">'click'</span>, (e) => {
+        lightboxImg.src = img.src;
+        lightbox.<span class="fn">classList</span>.<span class="fn">remove</span>(<span class="str">'hidden'</span>);
+
+        <span class="cm">// Chargement dynamique de la fiche technique .txt</span>
+        <span class="kw">const</span> baseName = img.<span class="fn">getAttribute</span>(<span class="str">'data-file'</span>);
+        <span class="kw">if</span> (baseName) {
+            <span class="fn">fetch</span>(<span class="str">'fichier/'</span> + baseName + <span class="str">'.txt'</span>)
+                .<span class="fn">then</span>(r => r.<span class="fn">text</span>())
+                .<span class="fn">then</span>(data => { lightboxDesc.innerHTML = <span class="fn">formatDescription</span>(data); });
+        }
+    });
+});</pre>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 8 — FONCTIONNALITÉS -->
+  <div class="section">
+    <p class="sec-label">8 · Fonctionnalités clés</p>
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="feat-icon" style="background:#E1F5EE">🗄️</div>
+        <h4>BDD dynamique</h4>
+        <p>Connexion MySQL via PDO avec requêtes préparées pour éviter les injections SQL</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#E6F1FB">🔄</div>
+        <h4>Sync auto</h4>
+        <p>Le dossier images est synchronisé automatiquement avec la base à chaque chargement</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#FAEEDA">🖼️</div>
+        <h4>Lightbox animée</h4>
+        <p>Ouverture fluide avec animation, fermeture clic / Échap, fiche technique chargée en fetch</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#FAECE7">🔒</div>
+        <h4>Sécurité PHP</h4>
+        <p>Chemin absolu, limite 100 Ko, htmlspecialchars sur tous les outputs utilisateur</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#EEEDFE">📱</div>
+        <h4>Responsive</h4>
+        <p>Mise en page adaptée mobile avec media queries CSS pour tous les écrans</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#EAF3DE">✉️</div>
+        <h4>Contact dynamique</h4>
+        <p>Email et téléphone chargés depuis la BDD, liens mailto: pré-remplis par prestation</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER NAV -->
+  <div class="footer-nav">
+    <a href="index.html">← Retour au portfolio</a>
+    <a href="https://github.com/TON-PSEUDO/vitrine-photo" target="_blank" class="cta">Voir le code sur GitHub</a>
+  </div>
+
+</div>
+</body>
+</html>
