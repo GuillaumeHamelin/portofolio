@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Site Zoo — Guillaume</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #ffffff; --bg2: #f7f7f5; --bg3: #f0f0ee;
+      --text: #1a1a1a; --text2: #6b6b6b; --text3: #a0a0a0;
+      --border: rgba(0,0,0,0.09); --border2: rgba(0,0,0,0.16);
+      --accent: #1D9E75; --accent-d: #0F6E56;
+      --accent-l: #E1F5EE; --accent-t: #0F6E56;
+      --r-md: 8px; --r-lg: 12px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #161616; --bg2: #1f1f1f; --bg3: #282828;
+        --text: #f0f0f0; --text2: #999; --text3: #555;
+        --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.15);
+        --accent-l: #0a3d2e; --accent-t: #5DCAA5;
+      }
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    .container { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem 6rem; }
+
+    .back {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 13px; color: var(--text2); text-decoration: none;
+      padding: 7px 14px; border: 0.5px solid var(--border2);
+      border-radius: var(--r-md); margin-bottom: 2.5rem;
+      transition: background 0.15s, color 0.15s;
+    }
+    .back:hover { background: var(--bg2); color: var(--text); }
+    .back:hover svg { transform: translateX(-2px); }
+    .back svg { transition: transform 0.15s; }
+
+    .hero { display: flex; gap: 1.5rem; align-items: flex-start; padding-bottom: 2rem; border-bottom: 0.5px solid var(--border); margin-bottom: 2.5rem; flex-wrap: wrap; }
+
+    .proj-logo { width: 68px; height: 68px; border-radius: 14px; overflow: hidden; border: 0.5px solid var(--border2); flex-shrink: 0; background: #000; display: flex; align-items: center; justify-content: center; }
+    .proj-logo img { width: 100%; height: 100%; object-fit: contain; padding: 4px; }
+
+    .hero-text h1 { font-size: clamp(22px, 4vw, 30px); font-weight: 600; letter-spacing: -0.4px; line-height: 1.2; }
+    .hero-text p { font-size: 14px; color: var(--text2); margin-top: 8px; line-height: 1.65; max-width: 520px; }
+
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+    .chip { font-family: 'DM Mono', monospace; font-size: 11px; padding: 3px 10px; border-radius: 20px; border: 0.5px solid var(--border2); color: var(--text2); background: var(--bg2); }
+    .chip.g { border-color: var(--accent); color: var(--accent-t); background: var(--accent-l); }
+
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 2.5rem; }
+    @media(max-width:500px){ .stats { grid-template-columns: repeat(2,1fr); } }
+    .stat { background: var(--bg2); border-radius: var(--r-md); padding: 1rem; text-align: center; }
+    .stat .v { font-size: 22px; font-weight: 600; color: var(--accent); line-height: 1; }
+    .stat .l { font-size: 11px; color: var(--text3); margin-top: 5px; }
+
+    .section { margin-bottom: 3rem; }
+    .sec-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); margin-bottom: 1.25rem; }
+
+    .screen-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1rem; }
+    .screen-card { border: 0.5px solid var(--border); border-radius: var(--r-lg); overflow: hidden; background: var(--bg); transition: border-color 0.15s; }
+    .screen-card:hover { border-color: var(--border2); }
+    .screen-card.full { grid-column: 1 / -1; }
+
+    .screen-img { width: 100%; aspect-ratio: 16/9; overflow: hidden; background: var(--bg2); }
+    .screen-img img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform 0.3s ease; }
+    .screen-card:hover .screen-img img { transform: scale(1.02); }
+
+    .screen-caption { padding: 12px 16px; border-top: 0.5px solid var(--border); }
+    .screen-caption strong { font-size: 13px; font-weight: 500; display: block; }
+    .screen-caption span { font-size: 12px; color: var(--text2); margin-top: 2px; display: block; }
+
+    .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+    .feat { background: var(--bg2); border-radius: var(--r-md); padding: 1rem 1.1rem; }
+    .feat-icon { width: 34px; height: 34px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .feat h4 { font-size: 13px; font-weight: 500; margin-bottom: 5px; }
+    .feat p { font-size: 12px; color: var(--text2); line-height: 1.55; }
+
+    .code-wrap { background: #0d1117; border-radius: var(--r-lg); overflow: hidden; border: 0.5px solid var(--border2); margin-bottom: 1rem; }
+    .code-bar { background: #161b22; padding: 8px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 0.5px solid rgba(255,255,255,0.06); }
+    .code-bar span { font-family: 'DM Mono', monospace; font-size: 12px; color: #8b949e; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; } .dot-y { background: #febc2e; } .dot-g { background: #28c840; }
+    pre { padding: 1.25rem 1.5rem; font-family: 'DM Mono', monospace; font-size: 12px; color: #c9d1d9; overflow-x: auto; line-height: 1.7; }
+    .kw { color: #ff7b72; } .fn { color: #79c0ff; } .str { color: #a5d6ff; } .cm { color: #8b949e; font-style: italic; } .num { color: #f2cc60; }
+
+    .context-block {
+      background: var(--bg2); border-radius: var(--r-lg); padding: 1.25rem 1.5rem;
+      font-size: 13px; color: var(--text2); line-height: 1.7; margin-bottom: 1rem;
+      border-left: 3px solid var(--accent); border-radius: 0;
+    }
+
+    .pages-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 1rem; }
+    .page-card { background: var(--bg2); border-radius: var(--r-md); padding: 1rem; }
+    .page-card .num { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--accent); font-weight: 500; margin-bottom: 6px; }
+    .page-card h4 { font-size: 13px; font-weight: 500; margin-bottom: 4px; }
+    .page-card p { font-size: 12px; color: var(--text2); line-height: 1.5; }
+
+    hr { border: none; border-top: 0.5px solid var(--border); margin: 2.5rem 0; }
+
+    .footer-nav { display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; border-top: 0.5px solid var(--border); flex-wrap: wrap; gap: 1rem; }
+    .footer-nav a { font-size: 13px; color: var(--text2); text-decoration: none; padding: 8px 16px; border: 0.5px solid var(--border2); border-radius: var(--r-md); transition: background 0.15s; }
+    .footer-nav a:hover { background: var(--bg2); color: var(--text); }
+    .footer-nav a.cta { background: var(--accent); color: white; border-color: var(--accent); font-weight: 500; }
+    .footer-nav a.cta:hover { background: var(--accent-d); }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <a href="index.html" class="back">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3L5 8l5 5"/></svg>
+    Retour au portfolio
+  </a>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="proj-logo">
+      <img src="logo2.png" alt="Logo Thoiry ZooSafari" />
+    </div>
+    <div class="hero-text">
+      <h1>Site Zooparc — Thoiry / Beauval</h1>
+      <p>Site web multi-pages réalisé en BTS CIEL — présentation d'un zoo avec navigation, galerie d'animaux en tableau HTML et manipulation dynamique du DOM via JavaScript pur.</p>
+      <div class="chips">
+        <span class="chip g">HTML</span>
+        <span class="chip g">CSS</span>
+        <span class="chip g">JavaScript</span>
+        <span class="chip">DOM Manipulation</span>
+        <span class="chip">BTS CIEL · 2024</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><div class="v">2</div><div class="l">Pages</div></div>
+    <div class="stat"><div class="v">20+</div><div class="l">Animaux</div></div>
+    <div class="stat"><div class="v">JS</div><div class="l">DOM pur</div></div>
+    <div class="stat"><div class="v">0</div><div class="l">Framework</div></div>
+  </div>
+
+  <!-- CONTEXTE -->
+  <div class="section">
+    <p class="sec-label">Contexte du projet</p>
+    <div class="context-block">
+      Projet réalisé en BTS CIEL — l'objectif était de créer un site web pour le Zooparc de Thoiry en HTML/CSS, puis de le transformer dynamiquement via JavaScript pour le faire ressembler au Zoo de Beauval : changement du logo, du titre, de la couleur du header, des liens réseaux sociaux, et enrichissement de la galerie d'animaux.
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 1 — ACCUEIL -->
+  <div class="section">
+    <p class="sec-label">1 · Page d'accueil</p>
+    <div class="screen-grid">
+      <div class="screen-card full">
+        <div class="screen-img">
+          <img src="zoo_accueil.png" alt="Page d'accueil zoo" />
+        </div>
+        <div class="screen-caption">
+          <strong>Accueil — Zooparc de Thoiry transformé en Beauval via JS</strong>
+          <span>Le script modifie dynamiquement le titre, le logo et la couleur du header au chargement. La navigation latérale mène vers les pages Animaux, Accès, Actualités et Réservations.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 2 — ANIMAUX -->
+  <div class="section">
+    <p class="sec-label">2 · Page animaux</p>
+    <div class="screen-grid">
+      <div class="screen-card full">
+        <div class="screen-img">
+          <img src="zoo_animaux.png" alt="Page animaux zoo" />
+        </div>
+        <div class="screen-caption">
+          <strong>Galerie animaux — tableau HTML enrichi dynamiquement</strong>
+          <span>La galerie affiche 20 animaux en grille 4 colonnes. Le JS ajoute une ligne complète (Saimiri, Colibri, Renard, Gnou), remplace des images, colore les noms en jaune, et ajoute une légende via <code style="font-family:DM Mono,monospace;font-size:11px">caption</code>.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 3 — STRUCTURE -->
+  <div class="section">
+    <p class="sec-label">3 · Structure du projet</p>
+    <div class="pages-grid">
+      <div class="page-card">
+        <div class="num">index.html</div>
+        <h4>Accueil</h4>
+        <p>Page de bienvenue avec nav latérale et transformation JS du thème Thoiry → Beauval</p>
+      </div>
+      <div class="page-card">
+        <div class="num">animaux.html</div>
+        <h4>Les animaux</h4>
+        <p>Galerie en tableau HTML 4 colonnes, enrichie dynamiquement avec événements JS</p>
+      </div>
+      <div class="page-card">
+        <div class="num">style.css</div>
+        <h4>CSS accueil</h4>
+        <p>Layout flex, couleurs thème Thoiry, nav et footer</p>
+      </div>
+      <div class="page-card">
+        <div class="num">style1.css</div>
+        <h4>CSS animaux</div>
+        <p>Tableau, noms en overlay absolu sur les images, scrollable</p>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 4 — CODE -->
+  <div class="section">
+    <p class="sec-label">4 · Extraits de code</p>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        <span>script.js — transformation dynamique Thoiry → Beauval</span>
+      </div>
+      <pre><span class="cm">// Transformation du thème au chargement</span>
+document.<span class="fn">querySelector</span>(<span class="str">"h1"</span>).innerHTML = <span class="str">"ZOOPARC DE BEAUVAL"</span>;
+document.<span class="fn">getElementById</span>(<span class="str">"logo"</span>).<span class="fn">setAttribute</span>(<span class="str">"src"</span>, <span class="str">"Images/logo2.png"</span>);
+document.<span class="fn">querySelector</span>(<span class="str">"header"</span>).style.backgroundColor = <span class="str">"#006BB1"</span>;
+
+<span class="cm">// Mise à jour des liens réseaux sociaux</span>
+list = document.<span class="fn">querySelectorAll</span>(<span class="str">"a"</span>);
+list[<span class="num">6</span>].<span class="fn">setAttribute</span>(<span class="str">"href"</span>, <span class="str">"https://www.facebook.com/zoobeauval"</span>);
+list[<span class="num">7</span>].<span class="fn">setAttribute</span>(<span class="str">"href"</span>, <span class="str">"https://twitter.com/zoobeauval/"</span>);
+list[<span class="num">8</span>].<span class="fn">setAttribute</span>(<span class="str">"href"</span>, <span class="str">"https://www.instagram.com/zoobeauval/"</span>);</pre>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        <span>script1.js — ajout d'une ligne au tableau + événements interactifs</span>
+      </div>
+      <pre><span class="cm">// Création dynamique d'une ligne avec 4 nouveaux animaux</span>
+<span class="kw">let</span> newtr = document.<span class="fn">createElement</span>(<span class="str">"tr"</span>);
+<span class="kw">let</span> tdnew = document.<span class="fn">createElement</span>(<span class="str">"td"</span>);
+<span class="kw">let</span> imgnew = document.<span class="fn">createElement</span>(<span class="str">"img"</span>);
+imgnew.<span class="fn">setAttribute</span>(<span class="str">"src"</span>, <span class="str">"Images/colibri.jpg"</span>);
+tdnew.<span class="fn">appendChild</span>(imgnew);
+newtr.<span class="fn">appendChild</span>(tdnew);
+document.<span class="fn">querySelector</span>(<span class="str">"table"</span>).<span class="fn">appendChild</span>(newtr);
+
+<span class="cm">// Interaction : clic sur le header → couleur aléatoire</span>
+document.<span class="fn">querySelector</span>(<span class="str">"header"</span>).<span class="fn">addEventListener</span>(<span class="str">"click"</span>, <span class="kw">function</span>() {
+    <span class="kw">this</span>.style.backgroundColor =
+        <span class="str">'#'</span> + (Math.<span class="fn">random</span>() * <span class="num">0xFFFFFF</span> &lt;&lt; <span class="num">0</span>).<span class="fn">toString</span>(<span class="num">16</span>);
+});</pre>
+    </div>
+
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        <span>style1.css — nom de l'animal en overlay absolu sur l'image</span>
+      </div>
+      <pre><span class="fn">td</span> {
+    position: <span class="kw">relative</span>;
+    padding: <span class="num">0</span>;
+}
+
+<span class="fn">h3</span> {
+    width: <span class="num">100%</span>;
+    text-align: <span class="kw">center</span>;
+    color: <span class="kw">white</span>;
+    background-color: <span class="fn">rgb</span>(<span class="num">34</span>, <span class="num">46</span>, <span class="num">36</span>);
+    opacity: <span class="num">0.8</span>;
+    position: <span class="kw">absolute</span>;
+    bottom: <span class="num">0px</span>;
+    z-index: <span class="num">1</span>;
+}</pre>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 5 — FONCTIONNALITÉS -->
+  <div class="section">
+    <p class="sec-label">5 · Fonctionnalités clés</p>
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="feat-icon" style="background:#E1F5EE">🔄</div>
+        <h4>Thème dynamique</h4>
+        <p>Transformation complète Thoiry → Beauval : logo, titre, couleur, réseaux sociaux</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#E6F1FB">➕</div>
+        <h4>DOM dynamique</h4>
+        <p>Ajout d'une ligne entière au tableau via <code style="font-family:DM Mono,monospace;font-size:11px">createElement</code> et <code style="font-family:DM Mono,monospace;font-size:11px">appendChild</code></p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#FAEEDA">🎨</div>
+        <h4>Couleur aléatoire</h4>
+        <p>Clic sur le header → couleur de fond aléatoire générée en JavaScript</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#FAECE7">🖱️</div>
+        <h4>Hover interactif</h4>
+        <p>Survol des noms d'animaux → agrandissement, survol des menus → animation taille</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#EEEDFE">🔁</div>
+        <h4>Toggle image</h4>
+        <p>Clic sur l'éléphant → alternance entre deux images différentes</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#EAF3DE">📐</div>
+        <h4>Layout CSS</h4>
+        <p>Navigation latérale flex, noms en overlay absolu sur les images, footer responsive</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER NAV -->
+  <div class="footer-nav">
+    <a href="index.html">← Retour au portfolio</a>
+    <a href="https://github.com/TON-PSEUDO/site-zoo" target="_blank" class="cta">Voir le code sur GitHub</a>
+  </div>
+
+</div>
+</body>
+</html>
