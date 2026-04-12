@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>System Monitor Dashboard — Guillaume</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --bg: #ffffff; --bg2: #f7f7f5; --text: #1a1a1a; --text2: #6b6b6b; --text3: #a0a0a0;
+      --border: rgba(0,0,0,0.09); --border2: rgba(0,0,0,0.16);
+      --accent: #1D9E75; --accent-d: #0F6E56; --accent-l: #E1F5EE; --accent-t: #0F6E56;
+      --r-md: 8px; --r-lg: 12px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #161616; --bg2: #1f1f1f; --text: #f0f0f0; --text2: #999; --text3: #555;
+        --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.15);
+        --accent-l: #0a3d2e; --accent-t: #5DCAA5; }
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+    .container { max-width: 860px; margin: 0 auto; padding: 2.5rem 1.5rem 6rem; }
+
+    .back { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; color: var(--text2); text-decoration: none; padding: 7px 14px; border: 0.5px solid var(--border2); border-radius: var(--r-md); margin-bottom: 2.5rem; transition: background 0.15s; }
+    .back:hover { background: var(--bg2); color: var(--text); }
+    .back:hover svg { transform: translateX(-2px); }
+    .back svg { transition: transform 0.15s; }
+
+    .hero { display: flex; gap: 1.5rem; align-items: flex-start; padding-bottom: 2rem; border-bottom: 0.5px solid var(--border); margin-bottom: 2.5rem; flex-wrap: wrap; }
+    .proj-icon { width: 68px; height: 68px; border-radius: 14px; background: #0f0f0f; border: 0.5px solid var(--border2); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 28px; }
+    .hero-text h1 { font-size: clamp(22px, 4vw, 30px); font-weight: 600; letter-spacing: -0.4px; line-height: 1.2; }
+    .hero-text p { font-size: 14px; color: var(--text2); margin-top: 8px; line-height: 1.65; max-width: 520px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
+    .chip { font-family: 'DM Mono', monospace; font-size: 11px; padding: 3px 10px; border-radius: 20px; border: 0.5px solid var(--border2); color: var(--text2); background: var(--bg2); }
+    .chip.g { border-color: var(--accent); color: var(--accent-t); background: var(--accent-l); }
+
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 2.5rem; }
+    @media(max-width:500px){ .stats { grid-template-columns: repeat(2,1fr); } }
+    .stat { background: var(--bg2); border-radius: var(--r-md); padding: 1rem; text-align: center; }
+    .stat .v { font-size: 22px; font-weight: 600; color: var(--accent); line-height: 1; }
+    .stat .l { font-size: 11px; color: var(--text3); margin-top: 5px; }
+
+    .section { margin-bottom: 3rem; }
+    .sec-label { font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text3); margin-bottom: 1.25rem; }
+
+    .screen-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 1rem; }
+    .screen-card { border: 0.5px solid var(--border); border-radius: var(--r-lg); overflow: hidden; background: var(--bg); transition: border-color 0.15s; }
+    .screen-card:hover { border-color: var(--border2); }
+    .screen-card.full { grid-column: 1 / -1; }
+    .screen-img { width: 100%; aspect-ratio: 16/9; overflow: hidden; background: var(--bg2); }
+    .screen-img.tall { aspect-ratio: 9/16; max-height: 500px; }
+    .screen-img img { width: 100%; height: 100%; object-fit: cover; object-position: top; transition: transform 0.3s; }
+    .screen-card:hover .screen-img img { transform: scale(1.02); }
+    .screen-caption { padding: 12px 16px; border-top: 0.5px solid var(--border); }
+    .screen-caption strong { font-size: 13px; font-weight: 500; display: block; }
+    .screen-caption span { font-size: 12px; color: var(--text2); margin-top: 2px; display: block; }
+
+    .feat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 10px; }
+    .feat { background: var(--bg2); border-radius: var(--r-md); padding: 1rem 1.1rem; }
+    .feat-icon { width: 34px; height: 34px; border-radius: 8px; margin-bottom: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+    .feat h4 { font-size: 13px; font-weight: 500; margin-bottom: 5px; }
+    .feat p { font-size: 12px; color: var(--text2); line-height: 1.55; }
+
+    .code-wrap { background: #0d1117; border-radius: var(--r-lg); overflow: hidden; border: 0.5px solid var(--border2); margin-bottom: 1rem; }
+    .code-bar { background: #161b22; padding: 8px 16px; display: flex; align-items: center; gap: 8px; border-bottom: 0.5px solid rgba(255,255,255,0.06); }
+    .code-bar span { font-family: 'DM Mono', monospace; font-size: 12px; color: #8b949e; }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-r { background: #ff5f57; } .dot-y { background: #febc2e; } .dot-g { background: #28c840; }
+    pre { padding: 1.25rem 1.5rem; font-family: 'DM Mono', monospace; font-size: 12px; color: #c9d1d9; overflow-x: auto; line-height: 1.7; }
+    .kw { color: #ff7b72; } .fn { color: #79c0ff; } .str { color: #a5d6ff; } .cm { color: #8b949e; font-style: italic; } .num { color: #f2cc60; }
+
+    .arch-flow { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; padding: 1.25rem 1.5rem; background: var(--bg2); border-radius: var(--r-lg); margin-bottom: 1rem; }
+    .arch-node { background: var(--bg); border: 0.5px solid var(--border2); border-radius: var(--r-md); padding: 8px 16px; font-size: 13px; font-weight: 500; }
+    .arch-node.accent { background: var(--accent-l); border-color: var(--accent); color: var(--accent-t); }
+    .arch-arrow { color: var(--text3); font-size: 18px; }
+
+    hr { border: none; border-top: 0.5px solid var(--border); margin: 2.5rem 0; }
+
+    .footer-nav { display: flex; justify-content: space-between; align-items: center; padding-top: 2rem; border-top: 0.5px solid var(--border); flex-wrap: wrap; gap: 1rem; }
+    .footer-nav a { font-size: 13px; color: var(--text2); text-decoration: none; padding: 8px 16px; border: 0.5px solid var(--border2); border-radius: var(--r-md); transition: background 0.15s; }
+    .footer-nav a:hover { background: var(--bg2); color: var(--text); }
+    .footer-nav a.cta { background: var(--accent); color: white; border-color: var(--accent); font-weight: 500; }
+    .footer-nav a.cta:hover { background: var(--accent-d); }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <a href="index.html" class="back">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M10 3L5 8l5 5"/></svg>
+    Retour au portfolio
+  </a>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="proj-icon">📊</div>
+    <div class="hero-text">
+      <h1>System Monitor Dashboard</h1>
+      <p>Dashboard web de monitoring système en temps réel — CPU, RAM, réseau, uptime — avec graphique historique, base de données SQLite et accès depuis n'importe quel appareil via WebSocket.</p>
+      <div class="chips">
+        <span class="chip g">Node.js</span>
+        <span class="chip g">WebSocket</span>
+        <span class="chip g">JavaScript</span>
+        <span class="chip g">HTML / CSS</span>
+        <span class="chip g">SQLite</span>
+        <span class="chip">Chart.js</span>
+        <span class="chip">systeminformation</span>
+        <span class="chip">ngrok</span>
+        <span class="chip">Projet perso · 2025</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat"><div class="v">6</div><div class="l">Métriques</div></div>
+    <div class="stat"><div class="v">1s</div><div class="l">Refresh</div></div>
+    <div class="stat"><div class="v">WS</div><div class="l">Temps réel</div></div>
+    <div class="stat"><div class="v">∞</div><div class="l">Historique BDD</div></div>
+  </div>
+
+  <!-- SECTION 1 — PC -->
+  <div class="section">
+    <p class="sec-label">1 · Dashboard sur PC</p>
+    <div class="screen-grid">
+      <div class="screen-card full">
+        <div class="screen-img">
+          <img src="dashboard_pc.png" alt="Dashboard sur PC" />
+        </div>
+        <div class="screen-caption">
+          <strong>Vue complète — PC Le_G · Ryzen 5 3600 · Windows 11</strong>
+          <span>CPU à 51%, RAM à 70%, fréquence CPU à 36 GHz, uptime 2h28, download 16.7 KB/s — graphique historique CPU/RAM en temps réel sur les 60 dernières secondes.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 2 — MOBILE -->
+  <div class="section">
+    <p class="sec-label">2 · Accès depuis mobile (5G)</p>
+    <div class="screen-grid">
+      <div class="screen-card" style="max-width:360px;margin:0 auto">
+        <div class="screen-img tall">
+          <img src="dashboard_mobile.png" alt="Dashboard sur mobile" style="object-position:top" />
+        </div>
+        <div class="screen-caption">
+          <strong>Accessible depuis n'importe où via ngrok</strong>
+          <span>Le dashboard est consultable depuis un téléphone en 5G — WebSocket et HTTP sur le même port, tunnel ngrok pour l'accès internet.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 3 — ARCHITECTURE -->
+  <div class="section">
+    <p class="sec-label">3 · Architecture</p>
+    <div class="arch-flow">
+      <div class="arch-node">systeminformation</div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node accent">Node.js<br><small style="font-size:10px;font-weight:400">HTTP + WebSocket</small></div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">SQLite</div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">Navigateur</div>
+      <span class="arch-arrow">→</span>
+      <div class="arch-node">ngrok</div>
+    </div>
+    <p style="font-size:13px;color:var(--text2);line-height:1.7">Le serveur Node.js lit les métriques système toutes les secondes via <code style="font-family:DM Mono,monospace;font-size:11px">systeminformation</code>, les stocke en SQLite, et les envoie en temps réel au navigateur via WebSocket. HTTP et WebSocket partagent le même port 3000 pour la compatibilité ngrok.</p>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 4 — FONCTIONNALITÉS -->
+  <div class="section">
+    <p class="sec-label">4 · Fonctionnalités</p>
+    <div class="feat-grid">
+      <div class="feat">
+        <div class="feat-icon" style="background:#E1F5EE">📡</div>
+        <h4>Temps réel</h4>
+        <p>Données CPU, RAM, fréquence, réseau et uptime mis à jour chaque seconde via WebSocket</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#E6F1FB">📈</div>
+        <h4>Graphique historique</h4>
+        <p>Courbe CPU/RAM des 60 dernières secondes avec Chart.js, axes dynamiques</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#FAEEDA">⚠️</div>
+        <h4>Alertes visuelles</h4>
+        <p>Les cartes passent en orange puis rouge quand CPU ou RAM dépassent les seuils</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#FAECE7">🗄️</div>
+        <h4>Base SQLite</h4>
+        <p>Toutes les mesures sont sauvegardées en base — historique consultable à tout moment</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#EEEDFE">🌍</div>
+        <h4>Accès internet</h4>
+        <p>Tunnel ngrok pour accéder au dashboard depuis n'importe quel appareil dans le monde</p>
+      </div>
+      <div class="feat">
+        <div class="feat-icon" style="background:#EAF3DE">💻</div>
+        <h4>Infos système</h4>
+        <p>Nom du PC, OS et modèle CPU affichés automatiquement à la connexion</p>
+      </div>
+    </div>
+  </div>
+
+  <hr>
+
+  <!-- SECTION 5 — CODE -->
+  <div class="section">
+    <p class="sec-label">5 · Extrait de code — serveur WebSocket + SQLite</p>
+    <div class="code-wrap">
+      <div class="code-bar">
+        <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+        <span>server.js — collecte et envoi des métriques</span>
+      </div>
+      <pre><span class="cm">// Envoi des données toutes les secondes</span>
+<span class="kw">const</span> interval = <span class="fn">setInterval</span>(<span class="kw">async</span> () => {
+    <span class="kw">const</span> cpu     = <span class="kw">await</span> si.<span class="fn">currentLoad</span>();
+    <span class="kw">const</span> ram     = <span class="kw">await</span> si.<span class="fn">mem</span>();
+    <span class="kw">const</span> network = <span class="kw">await</span> si.<span class="fn">networkStats</span>(<span class="str">'*'</span>);
+
+    <span class="kw">const</span> data = {
+        cpu:  Math.<span class="fn">round</span>(cpu.currentLoad),
+        ram:  Math.<span class="fn">round</span>((ram.used / ram.total) * <span class="num">100</span>),
+        down: <span class="fn">parseFloat</span>((network[<span class="num">0</span>].rx_sec / <span class="num">1024</span>).<span class="fn">toFixed</span>(<span class="num">1</span>)) || <span class="num">0</span>,
+        up:   <span class="fn">parseFloat</span>((network[<span class="num">0</span>].tx_sec / <span class="num">1024</span>).<span class="fn">toFixed</span>(<span class="num">1</span>)) || <span class="num">0</span>,
+    };
+
+    <span class="cm">// Sauvegarde SQLite</span>
+    db.<span class="fn">prepare</span>(<span class="str">'INSERT INTO mesures (date,cpu,ram,down,up) VALUES (?,?,?,?,?)'</span>)
+      .<span class="fn">run</span>(<span class="kw">new</span> <span class="fn">Date</span>().<span class="fn">toISOString</span>(), data.cpu, data.ram, data.down, data.up);
+
+    <span class="cm">// Envoi WebSocket</span>
+    <span class="kw">if</span> (ws.readyState === WebSocket.OPEN)
+        ws.<span class="fn">send</span>(JSON.<span class="fn">stringify</span>(data));
+
+}, <span class="num">1000</span>);</pre>
+    </div>
+  </div>
+
+  <!-- FOOTER NAV -->
+  <div class="footer-nav">
+    <a href="index.html">← Retour au portfolio</a>
+    <a href="https://github.com/TON-PSEUDO/dashboard-monitor" target="_blank" class="cta">Voir le code sur GitHub</a>
+  </div>
+
+</div>
+</body>
+</html>
